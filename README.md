@@ -9,14 +9,15 @@ For any feedback, questions, or bugs, please file a Github issue, start a Github
 
 ## Installation
 To run the metrics, you have to install `cryodrgn`.
-`cryodrgn` may be installed via `pip`, and we recommend installing `cryodrgn` in a clean conda environment.
+We recommend installing `cryodrgn` in a clean virtual environment managed by [uv](https://docs.astral.sh/uv/)
+(see the [uv installation guide](https://docs.astral.sh/uv/getting-started/installation/) if you don't have it yet).
 
-    # Create and activate conda environment
-    (base) $ conda create --name cryodrgn python=3.9
-    (cryodrgn) $ conda activate cryodrgn
+    # Create and activate a virtual environment
+    $ uv venv .venvs/cryodrgn --python 3.9
+    $ source .venvs/cryodrgn/bin/activate
 
     # install cryodrgn
-    (cryodrgn) $ pip install cryodrgn
+    (cryodrgn) $ uv pip install cryodrgn
 
 More installation instructions are found in the [documentation](https://ez-lab.gitbook.io/cryodrgn/installation).
 

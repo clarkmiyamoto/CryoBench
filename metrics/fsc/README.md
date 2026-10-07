@@ -8,7 +8,7 @@ class average latent space points.
 
 ## Installation instructions
 
-We recommend using conda environments to install the dependencies for calculating these metrics, and to use a separate
+We recommend using [uv](https://docs.astral.sh/uv/) virtual environments to install the dependencies for calculating these metrics, and to use a separate
 environment for each method **as well as for running the reconstruction model and for CryoBench analyses**.
 This is necessary as many of the methods have overlapping dependencies — especially cryoDRGN, which forms
 the basis for several of the example methods and is also used by CryoBench itself.
@@ -34,19 +34,18 @@ This variable has to be re-defined every time the environment is loaded unless i
 Create an environment for running cryoDRGN models.
 Here we specify a recent version to use for producing reconstruction output:
 ```bash
-$ conda create --name cryodrgn_model python=3.10
-$ conda activate cryodrgn_model
-(cryodrgn_model)$ pip install 'cryodrgn==3.4.1'
+$ uv venv .venvs/cryodrgn_model --python 3.10
+$ source .venvs/cryodrgn_model/bin/activate
+(cryodrgn_model)$ uv pip install 'cryodrgn==3.4.1'
 ```
 
 Next, create an environment for running CryoBench analyses on cryoDRGN output.
 Here we instead install an older version of cryoDRGN, and also downgrade its dependencies to account for updates
 since this older version of cryoDRGN was released:
 ```bash
-$ conda create --name cryodrgn_bench python=3.10
-$ conda activate cryodrgn_bench
-(cryodrgn_bench)$ pip install git+https://github.com/ml-struct-bio/cryodrgn.git@2.0.0-beta
-(cryodrgn_bench)$ pip install 'numpy<1.27'
+$ uv venv .venvs/cryodrgn_bench --python 3.10
+$ source .venvs/cryodrgn_bench/bin/activate
+(cryodrgn_bench)$ uv pip install git+https://github.com/ml-struct-bio/cryodrgn.git@2.0.0-beta 'numpy<1.27'
 ```
 
 
@@ -77,7 +76,7 @@ The commands below are assumed to be run from the same directory in which `IgG-1
 
 We first run the reconstruction algorithm. This command took 3h 20min using 4 Tesla V100 GPUs:
 ```bash
-  $ conda activate cryodrgn_model
+  $ source .venvs/cryodrgn_model/bin/activate
 
   (cryodrgn_model)$ cryodrgn train_vae IgG-1D/images/snr0.01/sorted_particles.128.txt -n 20 --zdim 8 \
                                        --ctf IgG-1D/combined_ctfs.pkl --poses IgG-1D/combined_poses.pkl \
@@ -87,7 +86,7 @@ We first run the reconstruction algorithm. This command took 3h 20min using 4 Te
 We then run the CryoBench script for generating image volumes and comparing them to ground truth volumes. Because
 cryoDRGN output volumes are 0-indexed, the last volume from our model lasting twenty epochs is numbered `19`:
 ```bash
-  $ conda activate cryodrgn_bench
+  $ source .venvs/cryodrgn_bench/bin/activate
 
   # Compute per image FSC
   (cryodrgn_bench)$ python metrics/fsc/cdrgn.py cBench_input/IgG-1D/cryodrgn_fixed/ --epoch 19 --Apix 3.0 -n 100 \
@@ -101,14 +100,14 @@ cryoDRGN output volumes are 0-indexed, the last volume from our model lasting tw
 
 ### cryoDRGN with ab-initio poses
 ```bash
-  $ conda activate cryodrgn_model
+  $ source .venvs/cryodrgn_model/bin/activate
 
   (cryodrgn_model)$ cryodrgn abinit_het IgG-1D/images/snr0.005/sorted_particles.128.txt -n 30 --zdim 8 \
                                         --ctf IgG-1D/combined_ctfs.pkl -o cBench_input/IgG-1D/cryodrgn_abinit/
 ```
 
 ```bash
-  $ conda activate cryodrgn_bench
+  $ source .venvs/cryodrgn_bench/bin/activate
 
   # Compute per image FSC
   (cryodrgn_bench)$ python metrics/fsc/cdrgn.py cBench_input/IgG-1D/cryodrgn_abinit/ --epoch 29 --Apix 3.0 -n 100 \
